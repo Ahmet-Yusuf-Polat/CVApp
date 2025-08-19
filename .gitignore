@@ -1,0 +1,30 @@
+# node & logs
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# env / secrets
+.env
+*.env.*
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# RN build çıktıları (bare varsa)
+android/.gradle/
+android/app/build/
+android/build/
+ios/build/
+ios/Pods/
+*.iml
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

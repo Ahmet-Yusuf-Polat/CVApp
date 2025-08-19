@@ -1,0 +1,2 @@
+// src/info/summary.js
+export default `I am a results-driven developer with 2 years of mobile application development experience using React Native and Flutter for both iOS and Android platforms. I prioritize writing clean, testable, maintainable, and readable code aligned with Clean Architecture principles. As a responsible and collaborative developer, I focus on building user-centered solutions. I continuously improve my technical skills and follow emerging technologies closely to deliver modern, value-added solutions in every project I contribute to.`;
