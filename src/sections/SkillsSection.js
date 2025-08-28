@@ -1,12 +1,45 @@
-// src/sections/SkillsSection.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Section from './Section';
 import { useCardStyles } from '../theme/useCardStyles';
-import { SKILLS as data } from '../info/skills';
 
-export default function SkillsSection({ style }) {
+// skills: string (tek satır) veya string[] gelebilir
+function normalizeSkills(src) {
+  if (!src) return [];
+  if (Array.isArray(src)) {
+    return src.map(s => String(s).trim()).filter(Boolean);
+  }
+  const s = String(src).trim();
+
+  // önce klasik ayraçlar: virgül, satır sonu, madde işaretleri
+  let parts = s.split(/,|\n|·|•|\|/).map(x => x.trim()).filter(Boolean);
+  if (parts.length > 1) return parts;
+
+  // sadece boşlukla yazılmışsa çok-kelimeli terimleri koruyarak böl
+  const phrases = [
+    'React Native', 'RESTful APIs', 'Redux Toolkit', 'React Hooks',
+    'Expo & EAS', 'App Store / Play Console', 'OneSignal / FCM',
+    'React Navigation', 'GitHub (CI/CD)'
+  ];
+  let temp = ` ${s} `;
+  phrases.forEach(p => {
+    const re = new RegExp(`\\s${p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s`, 'g');
+    temp = temp.replace(re, ` ${p.replace(/ /g, '_')} `);
+  });
+  parts = temp.trim().split(/\s+/).map(x => x.replace(/_/g, ' ')).filter(Boolean);
+  return parts;
+}
+
+function splitInto3(items) {
+  const cols = [[], [], []];
+  items.forEach((it, i) => cols[i % 3].push(it));
+  return cols;
+}
+
+export default function SkillsSection({ style, title = 'SKILLS', skills }) {
   const { colors, chipBg, borderColor } = useCardStyles();
+  const items = normalizeSkills(skills);
+  const [c1, c2, c3] = splitInto3(items);
 
   const Col = ({ items }) => (
     <View style={styles.col}>
@@ -19,11 +52,11 @@ export default function SkillsSection({ style }) {
   );
 
   return (
-    <Section title="SKILLS" style={style}>
+    <Section title={title} style={style}>
       <View style={styles.columns}>
-        <Col items={data.col1} />
-        <Col items={data.col2} />
-        <Col items={data.col3} />
+        <Col items={c1} />
+        <Col items={c2} />
+        <Col items={c3} />
       </View>
     </Section>
   );

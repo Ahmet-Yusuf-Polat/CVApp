@@ -28,6 +28,6 @@ const styles = StyleSheet.create({
     borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)',
   },
   textCol: { flex: 1, marginLeft: 12, minWidth: 0 },
-  name: { fontSize: 26, fontWeight: '900' },
-  title: { fontSize: 18, fontWeight: '700', marginTop: 4 },
+  name: { fontSize: 22, fontWeight: '900' ,marginTop: 4},
+  title: { fontSize: 14, fontWeight: '700', marginTop: 4 },
 });

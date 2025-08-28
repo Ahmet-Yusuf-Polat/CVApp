@@ -1,14 +1,14 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+  import { Pressable, Text, StyleSheet, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useThemeMode } from '../theme/ThemeMode';
 import { BUTTON_PALETTES } from '../theme/buttonPalette';
 
 const SIZE_MAP = {
-  sm: { minHeight: 40, padV: 10, fontSize: 12 },
-  md: { minHeight: 48, padV: 12, fontSize: 13 },
-  lg: { minHeight: 56, padV: 16, fontSize: 14 },
-  xl: { minHeight: 64, padV: 18, fontSize: 16 },
+  sm: { minHeight: 44, padV: 10, fontSize: 12 },
+  md: { minHeight: 52, padV: 12, fontSize: 13 },
+  lg: { minHeight: 60, padV: 16, fontSize: 15 },
+  xl: { minHeight: 68, padV: 18, fontSize: 16 }, // yüksek buton
 };
 
 export default function GradientButton({
@@ -28,7 +28,12 @@ export default function GradientButton({
       onPress={onPress}
       style={({ pressed }) => [
         styles.touch,
-        { minHeight: S.minHeight, borderRadius: 16 },
+        {
+          minHeight: S.minHeight,
+          paddingVertical: S.padV,
+          paddingHorizontal: 16,
+          borderRadius: 16,
+        },
         pressed && { opacity: 0.95 },
         style,
       ]}
@@ -41,7 +46,23 @@ export default function GradientButton({
         end={{ x: 1, y: 1 }}
         style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
       />
-      <Text style={[styles.label, { fontSize: S.fontSize, paddingVertical: S.padV }]}>{title}</Text>
+
+      {/* Metin: lineHeight + küçük android payı */}
+      <Text
+        style={[
+          styles.label,
+          {
+            fontSize: S.fontSize,
+            lineHeight: Math.round(S.fontSize * 1.25),
+            paddingTop: Platform.OS === 'android' ? 2 : 0,
+            paddingBottom: Platform.OS === 'android' ? 2 : 0,
+          },
+        ]}
+        // erişilebilirlik metin boyutunu kapatmak istersen (genelde önermem):
+        // allowFontScaling={false}
+      >
+        {title}
+      </Text>
     </Pressable>
   );
 }
@@ -49,10 +70,9 @@ export default function GradientButton({
 const styles = StyleSheet.create({
   touch: {
     width: '100%',
-    overflow: 'hidden',        // ripple + köşe
+    overflow: 'hidden',
     alignItems: 'center',
-    justifyContent: 'center',
-    // hafif yükselti
+      justifyContent: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -61,9 +81,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: '#FFFFFF',
-    fontWeight: '800',
-    letterSpacing: 0.5,
-    paddingHorizontal: 16,
+    fontWeight: '500',
     textAlign: 'center',
   },
 });

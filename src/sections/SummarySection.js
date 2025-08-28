@@ -3,12 +3,13 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import Section from './Section';
 import { useCardStyles } from '../theme/useCardStyles';
-import summaryText from '../info/summary';
 
-export default function SummarySection({ text = summaryText, style }) {
+export default function SummarySection({ style, title = 'SUMMARY', summary }) {
   const { colors } = useCardStyles();
+  const text = typeof summary === 'string' ? summary : '';
+
   return (
-    <Section title="SUMMARY" style={style}>
+    <Section title={title} style={style}>
       <Text style={[styles.text, { color: colors.text }]}>{text}</Text>
     </Section>
   );

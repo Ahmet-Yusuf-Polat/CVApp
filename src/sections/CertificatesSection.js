@@ -1,49 +1,58 @@
-// src/sections/CertificatesSection.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Section from './Section';
 import { useCardStyles } from '../theme/useCardStyles';
-import { CERTIFICATES as data } from '../info/certificates';
 
-export default function CertificatesSection({ style }) {
-  const { colors, subText } = useCardStyles();
+// String veya string[] gelebilir
+function normalizeItems(src) {
+  if (!src) return [];
+  if (Array.isArray(src)) {
+    return src.map(s => String(s).trim()).filter(Boolean);
+  }
+  const s = String(src).trim();
+  // Önce özel ayraç: "-------"
+  let parts = s.split(/-------/).map(x => x.trim()).filter(Boolean);
+  if (parts.length > 1) return parts;
+  // Sonra satır sonu, nokta-madde, dikey çizgi
+  parts = s.split(/\n|·|•|\|/).map(x => x.trim()).filter(Boolean);
+  if (parts.length > 1) return parts;
+  // Son çare: iki veya daha fazla boşlukla ayırmayı dene
+  parts = s.split(/\s{2,}/).map(x => x.trim()).filter(Boolean);
+  return parts.length ? parts : [s];
+}
+
+export default function CertificatesSection({ style, title = 'CERTIFICATES', items }) {
+  const { colors, subText, borderColor, chipBg } = useCardStyles();
+  const list = normalizeItems(items);
 
   return (
-    <Section title="CERTIFICATES" style={style}>
-      {data.map((c, idx) => (
-        <View key={idx} style={styles.item}>
-          {/* ÜST SATIR: Başlık (bold) —— Tarih (sağda) */}
-          <View style={styles.row}>
-            <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>
-              {c.title}
-            </Text>
-            <Text style={[styles.date, { color: subText }]} numberOfLines={1}>
-              {c.date}
+    <Section title={title} style={style}>
+      <View style={styles.wrap}>
+        {list.map((t, i) => (
+          <View key={i} style={[styles.row, { borderColor }]}>
+            <Text style={[styles.bullet, { color: subText }]}>•</Text>
+            <Text style={[styles.text, { color: colors.text }]} numberOfLines={2}>
+              {t}
             </Text>
           </View>
-
-          {/* ALT SATIRLAR: Provider ve Qualification ID */}
-          <Text style={[styles.sub, { color: subText }]} numberOfLines={1}>
-            {c.provider}
-          </Text>
-          <Text style={[styles.sub, { color: subText }]} numberOfLines={1}>
-            Qualification ID: {c.qualificationId}
-          </Text>
-        </View>
-      ))}
+        ))}
+        {list.length === 0 && (
+          <Text style={{ color: subText, fontStyle: 'italic' }}>No certificates/courses found.</Text>
+        )}
+      </View>
     </Section>
   );
 }
 
 const styles = StyleSheet.create({
-  item: { marginBottom: 10 },
+  wrap: { gap: 8 },
   row: {
     flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     gap: 8,
+    paddingVertical: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  title: { fontSize: 15, fontWeight: '800', flexShrink: 1, paddingRight: 8 },
-  date: { fontSize: 12, flexShrink: 0 },
-  sub: { marginTop: 6, fontSize: 13, fontWeight: '700' },
+  bullet: { fontSize: 16, lineHeight: 20 },
+  text: { flex: 1, fontSize: 13, fontWeight: '700', lineHeight: 20 },
 });
